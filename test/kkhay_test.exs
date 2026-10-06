@@ -62,3 +62,4 @@ defmodule KkhayTest do
     {:error, %Kkhay.SignatureError{}} = Webhook.parse_event(payload, "invalid_sig", secret)
   end
 end
+
