@@ -6,16 +6,18 @@ defmodule Kkhay.Webhook do
   alias Kkhay.SignatureError
 
   @doc """
-  Verifies the HMAC-SHA256 signature from the `x-kkhay-signature` header.
+  Verifies the cryptographic HMAC-SHA256 signature sent with incoming K Khay IPN webhooks.
+
+  Returns `true` if the signature is authentic and untampered.
   """
   @spec verify_signature(binary(), binary() | nil, binary()) :: boolean()
-  def verify_signature(_payload, nil, _ipn_secret), do: false
-  def verify_signature(_payload, "", _ipn_secret), do: false
+  def verify_signature(_payload, nil, _webhook_secret), do: false
+  def verify_signature(_payload, "", _webhook_secret), do: false
   def verify_signature(_payload, _sig, ""), do: false
 
-  def verify_signature(payload, signature, ipn_secret)
-      when is_binary(payload) and is_binary(signature) and is_binary(ipn_secret) do
-    secret = String.trim(ipn_secret)
+  def verify_signature(payload, signature, webhook_secret)
+      when is_binary(payload) and is_binary(signature) and is_binary(webhook_secret) do
+    secret = String.trim(webhook_secret)
     expected_hex =
       :crypto.mac(:hmac, :sha256, secret, payload)
       |> Base.encode16(case: :lower)
@@ -26,11 +28,12 @@ defmodule Kkhay.Webhook do
   end
 
   @doc """
-  Parses and validates an incoming raw webhook body.
+  Validates and parses an incoming raw webhook body.
+  Returns `{:ok, event_map}` on success or `{:error, %SignatureError{}}` on invalid signature.
   """
   @spec parse_event(binary(), binary() | nil, binary()) :: {:ok, map()} | {:error, any()}
-  def parse_event(raw_body, signature, ipn_secret) do
-    if verify_signature(raw_body, signature, ipn_secret) do
+  def parse_event(raw_body, signature, webhook_secret) do
+    if verify_signature(raw_body, signature, webhook_secret) do
       case Jason.decode(raw_body) do
         {:ok, map} -> {:ok, map}
         {:error, reason} -> {:error, reason}
@@ -46,4 +49,3 @@ defmodule Kkhay.Webhook do
 
   defp secure_compare(_, _), do: false
 end
-

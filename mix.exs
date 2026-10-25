@@ -4,14 +4,14 @@ defmodule Kkhay.MixProject do
   def project do
     [
       app: :kkhay,
-      version: "1.0.0",
+      version: "1.0.4",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      description: "Official Elixir and Phoenix SDK for K Khay Sovereign Crypto Payment Gateway",
+      description: "Official Elixir and Phoenix SDK for K Khay — The Non-Custodial Crypto Payment Gateway (190+ Networks, 500+ Currencies).",
       package: package(),
       deps: deps(),
       source_url: "https://github.com/boboaungdev/kkhay-elixir",
-      homepage_url: "https://kkhay.com"
+      homepage_url: "https://gateway.kkhay.com"
     ]
   end
 
@@ -35,9 +35,9 @@ defmodule Kkhay.MixProject do
       licenses: ["MIT"],
       links: %{
         "GitHub" => "https://github.com/boboaungdev/kkhay-elixir",
-        "Website" => "https://kkhay.com"
+        "Website" => "https://kkhay.com",
+        "Dashboard" => "https://gateway.kkhay.com"
       }
     ]
   end
 end
-

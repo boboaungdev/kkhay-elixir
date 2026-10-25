@@ -12,6 +12,5 @@ defmodule Kkhay.ApiError do
 end
 
 defmodule Kkhay.SignatureError do
-  defexception message: "Invalid K Khay webhook signature: Request rejected."
+  defexception message: "Invalid or untrusted K Khay webhook signature (x-kkhay-signature mismatch)."
 end
-
